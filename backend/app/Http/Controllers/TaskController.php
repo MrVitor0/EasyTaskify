@@ -7,29 +7,68 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $tasks = Task::all();
-        return response()->json(['tasks' => $tasks]);
+        return response()->json($tasks);
     }
+    
 
     public function show($id)
     {
-        return response()->json(['example' => 'show']);
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        return response()->json($task);
     }
+
 
     public function store(Request $request)
     {
-        return response()->json(['example' => 'store']);
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+
+        $task = Task::create($request->all());
+
+        return response()->json($task, 201);
     }
+
 
     public function update(Request $request, $id)
     {
-        return response()->json(['example' => 'update']);
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $task->update($request->all());
+
+        return response()->json($task);
     }
+
 
     public function destroy($id)
     {
-        return response()->json(['example' => 'destroy']);
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $task->delete();
+
+        return response()->json(['message' => 'Task deleted']);
     }
+
 }
