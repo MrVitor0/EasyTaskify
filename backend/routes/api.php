@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\Auth\RegisterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,7 +17,7 @@ use App\Http\Controllers\Auth\RegisterController;
 */
 
 Route::post('/register', [AuthController::class, 'register']);
-//put v1 in front of all routes, and add middleware auth:api~
+//put v1 in front of all routes, and add middleware auth:api
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function () {
     Route::get('/tasks', [TaskController::class, 'index']);
     Route::get('/tasks/{id}', [TaskController::class, 'show']);
