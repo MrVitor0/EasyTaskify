@@ -15,7 +15,7 @@ use App\Http\Controllers\TaskController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::post('/v1/handshake', [AuthController::class, 'handshake']);
 Route::post('/register', [AuthController::class, 'register']);
 //put v1 in front of all routes, and add middleware auth:api
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function () {

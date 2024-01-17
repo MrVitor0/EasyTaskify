@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,5 +63,19 @@ class AuthController extends Controller
     {
         $request->user()->token()->revoke();
         return response()->json(['message' => 'Successfully logged out'], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @description check if all the schema tables exists
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function handshake(Request $request)
+    {
+        //check if all the schema tables exists
+        if (!Schema::hasTable('users') || !Schema::hasTable('tasks')) {
+            return response()->json(['error' => 'Oops, looks like you need to run php artisan migrate, some tables are missing', 'code' => 500], 500);
+        }
+        return response()->json(['success' => 'handshake success', 'code' => 200], 200);
     }
 }
