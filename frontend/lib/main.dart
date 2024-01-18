@@ -51,7 +51,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  clearSharedPreferences();
+  //clearSharedPreferences(); 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   TokenManager tokenManager = TokenManager();
   bool isLoggedIn = await tokenManager.isUserLoggedIn();
