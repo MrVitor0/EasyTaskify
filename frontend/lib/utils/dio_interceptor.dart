@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'token_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 class AuthInterceptor extends Interceptor {
   @override
@@ -10,14 +12,17 @@ class AuthInterceptor extends Interceptor {
     options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     options.headers['Accept'] = 'application/json';
 
-    // Verifica se há um token Bearer no SharedPreferences
+    // Verifica se há um token no SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('bearerToken');
+    TokenController? tokenController = await TokenManager().getTokenInfo();
 
-    // Adiciona o token ao cabeçalho Authorization se existir
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
+    // Adiciona o access_token ao cabeçalho Authorization se existir
+    if (tokenController != null) {
+      options.headers['Authorization'] =
+          'Bearer ${tokenController.accessToken}';
     }
+
+    debugPrint(tokenController?.accessToken);
 
     // Adiciona client_id e client_secret ao corpo (body) da solicitação, isso precisa estar no .ENV (Facilitar Instalação)
     Map<String, dynamic> newData = {
