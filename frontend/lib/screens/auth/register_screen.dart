@@ -1,7 +1,6 @@
-import 'dart:convert';
+import 'package:frontend/components/footer_component.dart';
 import '../dashboard/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,19 +17,6 @@ class RegisterScreen extends StatelessWidget {
   Future<String?> getBackendUrl() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('backend_url');
-  }
-
-  goToLicense() async {
-    Uri url = Uri(
-      scheme: 'https',
-      host: 'github.com',
-      path: 'MrVitor0/EasyTaskify/blob/main/LICENSE',
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   Future<Map> registerAccount(String? backendUrl) async {
@@ -173,130 +159,97 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD9D9D9),
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            margin: const EdgeInsets.fromLTRB(20.0, 100.0, 20.0, 100.0),
-            child: Container(
-              margin: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'EasyTaskify',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  const Text(
-                    'Por favor, informe o seu nome, seu e-mail e sua senha.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
-                  ),
-                  const SizedBox(height: 20.0),
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Seu nome',
-                      hintText: 'John Doe',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  TextField(
-                    controller: mailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Seu e-mail',
-                      hintText: 'john@doe.com',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Sua Senha',
-                      hintText: '******',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      register(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50.0),
-                    ),
-                    child: const Text('Cadastrar-se'),
-                  ),
-                  const SizedBox(height: 20.0),
-                  InkWell(
-                    onTap: () {
-                      // Navegue para a tela de cadastro aqui
-                      Navigator.pushNamed(context, '/login');
-                    },
-                    child: const Text(
-                      'Já tem uma conta? Conecte-se',
+        backgroundColor: const Color(0xFFD9D9D9),
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+        ),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              margin: const EdgeInsets.fromLTRB(20.0, 100.0, 20.0, 100.0),
+              child: Container(
+                margin: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'EasyTaskify',
                       style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16.0,
+                        color: Colors.black,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10.0),
+                    const Text(
+                      'Por favor, informe o seu nome, seu e-mail e sua senha.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 20.0),
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Seu nome',
+                        hintText: 'John Doe',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    TextField(
+                      controller: mailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Seu e-mail',
+                        hintText: 'john@doe.com',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Sua Senha',
+                        hintText: '******',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        register(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50.0),
+                      ),
+                      child: const Text('Cadastrar-se'),
+                    ),
+                    const SizedBox(height: 20.0),
+                    InkWell(
+                      onTap: () {
+                        // Navegue para a tela de cadastro aqui
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      child: const Text(
+                        'Já tem uma conta? Conecte-se',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        elevation: 0,
-        child: SizedBox(
-          height: 80.0,
-          child: Center(
-            child: GestureDetector(
-              onTap: () {
-                goToLicense();
-              },
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Licença de Uso',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  Text(
-                    'TODOS os Direitos Reservados',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+        bottomNavigationBar: const TaskifyFooter());
   }
 }

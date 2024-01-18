@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:frontend/components/footer_component.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,19 +8,6 @@ class BackendScreen extends StatelessWidget {
   BackendScreen({Key? key}) : super(key: key);
 
   final TextEditingController urlController = TextEditingController();
-
-  goToLicense() async {
-    Uri url = Uri(
-      scheme: 'https',
-      host: 'github.com',
-      path: 'MrVitor0/EasyTaskify/blob/main/LICENSE',
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 
   Future<String> testURL(String backendUrl) async {
     Dio dio = Dio();
@@ -114,98 +101,65 @@ class BackendScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFD9D9D9),
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-      ),
-      body: Center(
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          margin: const EdgeInsets.fromLTRB(
-              20.0, 100.0, 20.0, 100.0), // Altera a margem do eixo X e Y
-          child: Container(
-            margin: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //adicione uma imagem de logo no centro
-                const Text(
-                  'EasyTaskify',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                const Text(
-                    'Antes de iniciar a aplicação, é necessário informar o URL do backend. 🚀',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 16.0)),
-                const SizedBox(height: 20.0),
-                TextField(
-                  controller: urlController,
-                  decoration: const InputDecoration(
-                    labelText: 'URL do Backend',
-                    hintText: 'http://192.168.0.3:8000',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    String backendUrl = urlController.text;
-                    validateBackendUrl(context, backendUrl);
-                  },
-                  //precisa ser mais largo
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50.0),
-                  ),
-                  child: const Text('Avançar'),
-                ),
-              ],
-            ),
-          ),
+        backgroundColor: const Color(0xFFD9D9D9),
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        elevation: 0,
-        child: SizedBox(
-          height: 80.0,
-          child: Center(
-            child: GestureDetector(
-              onTap: () {
-                goToLicense();
-              },
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        body: Center(
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.fromLTRB(
+                20.0, 100.0, 20.0, 100.0), // Altera a margem do eixo X e Y
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Licença de Uso',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  Text(
-                    'TODOS os Direitos Reservados',
+                  //adicione uma imagem de logo no centro
+                  const Text(
+                    'EasyTaskify',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 16.0,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  const Text(
+                      'Antes de iniciar a aplicação, é necessário informar o URL do backend. 🚀',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 16.0)),
+                  const SizedBox(height: 20.0),
+                  TextField(
+                    controller: urlController,
+                    decoration: const InputDecoration(
+                      labelText: 'URL do Backend',
+                      hintText: 'http://192.168.0.3:8000',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      String backendUrl = urlController.text;
+                      validateBackendUrl(context, backendUrl);
+                    },
+                    //precisa ser mais largo
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50.0),
+                    ),
+                    child: const Text('Avançar'),
                   ),
                 ],
               ),
             ),
           ),
         ),
-      ),
-    );
+        bottomNavigationBar: const TaskifyFooter());
   }
 }

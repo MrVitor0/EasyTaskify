@@ -3,7 +3,6 @@ import 'package:frontend/screens/dashboard/tasks/update_screen.dart';
 import 'package:frontend/screens/dashboard/tasks/view_screen.dart';
 import 'package:frontend/utils/tasks_controller.dart';
 import '/utils/token_controller.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,19 +13,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Task> _tasks = [];
-
-  goToLicense() async {
-    Uri url = Uri(
-      scheme: 'https',
-      host: 'github.com',
-      path: 'MrVitor0/EasyTaskify/blob/main/LICENSE',
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 
   Future<List<Task>> listTasks() async {
     TasksManager taskManager = TasksManager();
@@ -152,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.pushNamed(context, "/tasks/create");
                       },
                       icon: const Icon(Icons.add),
-                      label: const Text('Cadastarar Nova Task'),
+                      label: const Text('Cadastrar Nova Task'),
                     ),
                   ),
                 ],
@@ -172,39 +158,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
-        ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          elevation: 0,
-          child: SizedBox(
-            height: 80.0,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  goToLicense();
-                },
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Licença de Uso',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    Text(
-                      'TODOS os Direitos Reservados',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ),
       ),
     );
