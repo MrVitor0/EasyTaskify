@@ -1,6 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'dio_interceptor.dart';
 
@@ -53,7 +51,7 @@ class TasksManager {
               createdAt: taskJson['created_at']);
         }).toList();
 
-        debugPrint(taskList.toString());
+        debugPrint('here');
         return taskList;
       } else {
         debugPrint('Erro na requisição: ${response.statusCode}');
@@ -87,6 +85,56 @@ class TasksManager {
     } catch (e) {
       debugPrint('Erro ao deletar a tarefa: $e');
       throw Exception('Erro ao deletar a tarefa: $e');
+    }
+  }
+
+  Future<Map> createTask(String title, String description) async {
+    Dio dio = Dio();
+    dio.interceptors.add(AuthInterceptor());
+
+    try {
+      Response response = await dio.post(
+        '/api/v1/tasks',
+        data: {
+          'title': title,
+          'description': description,
+        },
+      ).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 201) {
+        return response.data;
+      } else {
+        debugPrint('Erro ao criar a tarefa: ${response.statusCode}');
+        throw Exception('Erro ao criar a tarefa: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Erro ao criar a tarefa: $e');
+      throw Exception('Erro ao criar a tarefa: $e');
+    }
+  }
+
+  Future<void> updateTask(int taskId, String title, String description) async {
+    Dio dio = Dio();
+    dio.interceptors.add(AuthInterceptor());
+
+    try {
+      Response response = await dio.put(
+        '/api/v1/tasks/$taskId',
+        data: {
+          'title': title,
+          'description': description,
+        },
+      ).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        debugPrint('Tarefa atualizada com sucesso.');
+      } else {
+        debugPrint('Erro ao atualizar a tarefa: ${response.statusCode}');
+        throw Exception('Erro ao atualizar a tarefa: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Erro ao atualizar a tarefa: $e');
+      throw Exception('Erro ao atualizar a tarefa: $e');
     }
   }
 }

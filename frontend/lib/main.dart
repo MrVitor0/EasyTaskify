@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/tasks_controller.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/home_screen.dart';
 import 'screens/backend_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+//taks
+import 'screens/dashboard/tasks/update_screen.dart';
+import 'screens/dashboard/tasks/create_screen.dart';
 import 'utils/token_controller.dart';
 
 void clearSharedPreferences() async {
@@ -51,7 +55,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //clearSharedPreferences(); 
+  //clearSharedPreferences();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   TokenManager tokenManager = TokenManager();
   bool isLoggedIn = await tokenManager.isUserLoggedIn();
@@ -76,6 +80,10 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/backend': (context) => BackendScreen(),
+        //tasks
+        '/tasks/create': (context) => CreateScreen(),
+        '/tasks/update': (context) => UpdateScreen(
+            taskData: ModalRoute.of(context)!.settings.arguments as Task),
       },
     );
   }

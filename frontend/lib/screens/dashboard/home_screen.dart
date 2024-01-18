@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/dashboard/tasks/update_screen.dart';
 import 'package:frontend/utils/tasks_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '/utils/token_controller.dart';
+import '../dashboard/tasks/update_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,12 +14,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Task> _tasks = [];
-
-  void printUrl() {
-    SharedPreferences.getInstance().then((prefs) {
-      debugPrint(prefs.getString('backend_url'));
-    });
-  }
 
   goToLicense() async {
     Uri url = Uri(
@@ -44,9 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
       future: listTasks(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 16.0),
+              padding: EdgeInsets.only(top: 16.0),
               child: Text('Carregando tarefas..'),
             ),
           );
@@ -58,56 +53,60 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 16.0),
+              padding: EdgeInsets.only(top: 16.0),
               child: Text('Nenhuma tarefa encontrada.'),
             ),
           );
         } else {
           _tasks = snapshot.data!;
-          return Container(
-            child: Column(
-              children: [
-                for (var task in _tasks)
-                  ListTile(
-                    title: Text(task.title),
-                    subtitle: Text(task.description),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_red_eye),
-                          onPressed: () {
-                            // Adicione sua lógica de edição aqui
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            // Adicione sua lógica de edição aqui
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          //color redf
-                          onPressed: () async {
-                            try {
-                              TasksManager taskManager = TasksManager();
-                              await taskManager.deleteTask(task.id);
-                              setState(() {
-                                _tasks.remove(task);
-                              });
-                            } catch (e) {
-                              debugPrint('Erro ao deletar a tarefa: $e');
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+          return Column(
+            children: [
+              for (var task in _tasks)
+                ListTile(
+                  title: Text(task.title),
+                  subtitle: Text(task.description),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove_red_eye),
+                        onPressed: () {
+                          // Adicione sua lógica de edição aqui
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UpdateScreen(taskData: task),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        //color redf
+                        onPressed: () async {
+                          try {
+                            TasksManager taskManager = TasksManager();
+                            await taskManager.deleteTask(task.id);
+                            setState(() {
+                              _tasks.remove(task);
+                            });
+                          } catch (e) {
+                            debugPrint('Erro ao deletar a tarefa: $e');
+                          }
+                        },
+                      ),
+                    ],
                   ),
-              ],
-            ),
+                ),
+            ],
           );
         }
       },
@@ -121,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
       canPop: false,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('EasyTaskify'),
           actions: [
             IconButton(
@@ -144,10 +144,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Adicione sua lógica para criar uma task aqui
+                        Navigator.pushNamed(context, "/tasks/create");
                       },
-                      icon: Icon(Icons.add),
-                      label: Text('Criar Task'),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Cadastarar Nova Task'),
                     ),
                   ),
                 ],

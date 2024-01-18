@@ -22,8 +22,6 @@ class AuthInterceptor extends Interceptor {
           'Bearer ${tokenController.accessToken}';
     }
 
-    debugPrint(tokenController?.accessToken);
-
     // Adiciona client_id e client_secret ao corpo (body) da solicitação, isso precisa estar no .ENV (Facilitar Instalação)
     Map<String, dynamic> newData = {
       'client_id': '6',

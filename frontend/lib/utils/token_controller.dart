@@ -97,6 +97,7 @@ class TokenManager {
           tokenController.expiresIn) {
         return true;
       } else {
+        //Na versão BETA os tokens NÃO terão expiração (365 Dias), então não será necessário implementar o refresh token
         //Aqui pode ser feito um request para /oauth/token com o refreshToken para obter um novo token
         debugPrint('O token expirou.');
       }
