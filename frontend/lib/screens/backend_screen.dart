@@ -4,8 +4,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class BackendScreen extends StatelessWidget {
+  BackendScreen({Key? key}) : super(key: key);
 
   final TextEditingController urlController = TextEditingController();
 
@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
   Future<String> testURL(String backendUrl) async {
     Dio dio = Dio();
     try {
-      Response response = await dio
+      await dio
           .post(
             '$backendUrl/api/v1/handshake',
             options: Options(
@@ -36,15 +36,13 @@ class HomeScreen extends StatelessWidget {
             ),
           )
           .timeout(const Duration(seconds: 8));
-      print(response.data);
     } catch (e) {
       return e.toString();
     }
     return 'Sucesso';
   }
 
-  Future<void> salvarStringNoSharedPreferences(
-      String chave, String valor) async {
+  Future<void> saveStringAtSharedPreferences(String chave, String valor) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(chave, valor);
   }
@@ -65,7 +63,8 @@ class HomeScreen extends StatelessWidget {
     ).show();
     testURL(backendUrl).then((value) {
       if (value == 'Sucesso') {
-        salvarStringNoSharedPreferences('nome', 'John Doe').then((value) {
+        saveStringAtSharedPreferences('backend_url', backendUrl).then((value) {
+          Navigator.pop(context);
           Navigator.pushNamed(context, '/login');
         });
       } else {
@@ -160,10 +159,8 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
-                    String backendUrl =
-                        urlController.text; // Obtém o valor do campo de texto
-                    validateBackendUrl(context,
-                        backendUrl); // Passa o valor para a função validateBackendUrl
+                    String backendUrl = urlController.text;
+                    validateBackendUrl(context, backendUrl);
                   },
                   //precisa ser mais largo
                   style: ElevatedButton.styleFrom(
@@ -178,13 +175,12 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
-        elevation: 0, // Remove a sombra do BottomAppBar
+        elevation: 0,
         child: SizedBox(
-          height: 80.0, // Ajuste conforme necessário
+          height: 80.0,
           child: Center(
             child: GestureDetector(
               onTap: () {
-                //open browser
                 goToLicense();
               },
               child: const Column(
