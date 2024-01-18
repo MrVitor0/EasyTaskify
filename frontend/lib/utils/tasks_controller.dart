@@ -7,12 +7,14 @@ class Task {
   final String title;
   final String description;
   final String createdAt;
+  final String updatedAt;
 
   Task({
     required this.id,
     required this.title,
     required this.description,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -20,7 +22,8 @@ class Task {
         id: json['id'],
         title: json['title'],
         description: json['description'],
-        createdAt: json['created_at']);
+        createdAt: json['created_at'],
+        updatedAt: json['updated_at']);
   }
 }
 
@@ -48,8 +51,13 @@ class TasksManager {
               id: taskJson['id'],
               title: taskJson['title'],
               description: taskJson['description'],
-              createdAt: taskJson['created_at']);
+              createdAt: taskJson['created_at'],
+              updatedAt:
+                  taskJson['updated_at']); // Adicionando o updatedAt aqui
         }).toList();
+
+        // Organizar a lista pelo updatedAt
+        taskList.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
         debugPrint('here');
         return taskList;

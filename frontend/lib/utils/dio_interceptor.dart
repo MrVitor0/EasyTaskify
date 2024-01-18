@@ -2,7 +2,6 @@ import 'dart:async';
 import 'token_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 
 class AuthInterceptor extends Interceptor {
   @override

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/utils/tasks_controller.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/home_screen.dart';
 import 'screens/backend_screen.dart';
+import 'utils/tasks_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //taks
+import 'screens/dashboard/tasks/view_screen.dart';
 import 'screens/dashboard/tasks/update_screen.dart';
 import 'screens/dashboard/tasks/create_screen.dart';
 import 'utils/token_controller.dart';
@@ -81,6 +82,8 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterScreen(),
         '/backend': (context) => BackendScreen(),
         //tasks
+        '/tasks/details': (context) => ViewScreen(
+            taskData: ModalRoute.of(context)!.settings.arguments as Task),
         '/tasks/create': (context) => CreateScreen(),
         '/tasks/update': (context) => UpdateScreen(
             taskData: ModalRoute.of(context)!.settings.arguments as Task),

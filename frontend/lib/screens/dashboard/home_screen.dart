@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/dashboard/tasks/update_screen.dart';
+import 'package:frontend/screens/dashboard/tasks/view_screen.dart';
 import 'package:frontend/utils/tasks_controller.dart';
 import '/utils/token_controller.dart';
-import '../dashboard/tasks/update_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,7 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         icon: const Icon(Icons.remove_red_eye),
                         onPressed: () {
-                          // Adicione sua lógica de edição aqui
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ViewScreen(taskData: task),
+                            ),
+                          );
                         },
                       ),
                       IconButton(

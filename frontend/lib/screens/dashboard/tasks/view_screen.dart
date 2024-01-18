@@ -1,23 +1,25 @@
 import '../../dashboard/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '/utils/dio_interceptor.dart';
 import '/utils/tasks_controller.dart';
 import '/utils/token_controller.dart';
 
-class CreateScreen extends StatelessWidget {
-  CreateScreen({Key? key}) : super(key: key);
+class ViewScreen extends StatelessWidget {
+  final Task taskData;
+  ViewScreen({required this.taskData, Key? key}) : super(key: key) {
+    // Definir valores iniciais para os campos de input
+    idController.text = taskData.id.toString();
+    creationDateController.text = taskData.createdAt;
+    updateDateController.text = taskData.updatedAt;
+    titleController.text = taskData.title;
+    descriptionController.text = taskData.description;
+  }
 
+  final TextEditingController idController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
-  //get backend url from shared preferences
-  Future<String?> getBackendUrl() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('backend_url');
-  }
+  final TextEditingController creationDateController = TextEditingController();
+  final TextEditingController updateDateController = TextEditingController();
 
   goToLicense() async {
     Uri url = Uri(
@@ -32,112 +34,8 @@ class CreateScreen extends StatelessWidget {
     }
   }
 
-  Future<Map> registerTask(String? backendUrl) async {
-    // use interceptor
-    Dio dio = Dio();
-    dio.interceptors.add(AuthInterceptor());
-
-    try {
-      TasksManager tasksManager = TasksManager();
-      Map responseSz = await tasksManager.createTask(
-          titleController.text, descriptionController.text);
-
-      return responseSz;
-    } on DioException catch (error) {
-      // Handle DioError para registro
-      debugPrint('Erro no registro: ${error.response?.data}');
-      String? firstErrorMessage;
-      Map<String, dynamic> responseData = error.response?.data ?? {};
-      if (responseData.containsKey('messages')) {
-        Map<String, dynamic> messages = responseData['messages'];
-        if (messages.isNotEmpty) {
-          firstErrorMessage = messages.values.first[0];
-        }
-      }
-      if (firstErrorMessage != null) {
-        // Handle the error message as needed
-        throw Exception(firstErrorMessage);
-      }
-      // Se não houver mensagens específicas, lançar uma mensagem padrão
-      throw Exception('Oops, ocorreu um erro durante o registro.');
-    } on Exception catch (error) {
-      // Handle other types of errors for registro
-      debugPrint('Erro no registro (outra exceção): $error');
-      throw Exception('Oops, ocorreu um erro durante o registro.');
-    }
-  }
-
-  Future<void> saveStringAtSharedPreferences(String chave, String valor) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(chave, valor);
-  }
-
-  Future<void> register(BuildContext context) async {
-    getBackendUrl().then((value) {
-      Alert(
-        context: context,
-        title: 'Tentando Conexão',
-        style: const AlertStyle(
-          backgroundColor: Colors.white,
-          titleStyle: TextStyle(color: Colors.black),
-          isCloseButton: false,
-          isOverlayTapDismiss: false,
-        ),
-        content: _buildLoadingWidget(),
-        buttons: [],
-      ).show();
-
-      registerTask(value).then((value) {
-        Navigator.pop(context);
-        // Use o contexto correto, como context de um StatefulWidget
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (BuildContext context) => const HomeScreen(),
-          ),
-        );
-      }).catchError((error) {
-        //get exception message
-        String errorMessage = error.message.toString();
-        Navigator.pop(context);
-        Alert(
-          context: context,
-          title: 'Oops',
-          desc: errorMessage,
-          style: const AlertStyle(
-            backgroundColor: Colors.white,
-            titleStyle: TextStyle(color: Colors.black),
-            descStyle: TextStyle(color: Colors.black, fontSize: 16.0),
-            isCloseButton: false,
-            isOverlayTapDismiss: false,
-          ),
-          buttons: [
-            DialogButton(
-              child: const Text(
-                'OK',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ).show();
-      });
-    });
-  }
-
-  Widget _buildLoadingWidget() {
-    return Container(
-      padding: const EdgeInsets.all(13.0),
-      child: const Column(
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16.0),
-          Text(
-            'Aguarde...',
-            style: TextStyle(color: Colors.black),
-          ),
-        ],
-      ),
-    );
+  String viewUID() {
+    return taskData.id.toString();
   }
 
   @override
@@ -185,7 +83,7 @@ class CreateScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Criar Task',
+                    'Exibindo Detalhes',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 30.0,
@@ -193,38 +91,85 @@ class CreateScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  const Text(
-                    'Por favor, informe o nome da tarefa e a descrição.',
+                  Text(
+                    'Exibindo detalhes da task:  ${viewUID()}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    style: const TextStyle(color: Colors.black, fontSize: 16.0),
                   ),
                   const SizedBox(height: 20.0),
                   TextField(
+                    enabled: false,
+                    style: const TextStyle(
+                      color: Colors.black, // Cor do texto para leitura
+                    ),
+                    controller: idController,
+                    decoration: const InputDecoration(
+                      labelText: 'ID',
+                      labelStyle: TextStyle(
+                        color: Colors.black, // Cor do hintText para leitura
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  TextField(
+                    enabled: false,
+                    style: const TextStyle(
+                      color: Colors.black, // Cor do texto para leitura
+                    ),
                     controller: titleController,
                     decoration: const InputDecoration(
                       labelText: 'Titulo da Tarefa',
-                      hintText: 'Exemplo de Tarefa',
+                      labelStyle: TextStyle(
+                        color: Colors.black, // Cor do hintText para leitura
+                      ),
                       border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   TextField(
+                    enabled: false,
+                    style: const TextStyle(
+                      color: Colors.black, // Cor do texto para leitura
+                    ),
                     controller: descriptionController,
                     decoration: const InputDecoration(
                       labelText: 'Descrição da Tarefa',
-                      hintText: 'Esse é um exemplo de descrição',
+                      labelStyle: TextStyle(
+                        color: Colors.black, // Cor do hintText para leitura
+                      ),
                       border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 20.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      register(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50.0),
+                  TextField(
+                    enabled: false,
+                    style: const TextStyle(
+                      color: Colors.black, // Cor do texto para leitura
                     ),
-                    child: const Text('Cadastrar Tarefa'),
+                    controller: creationDateController,
+                    decoration: const InputDecoration(
+                      labelText: 'Data de Criação',
+                      labelStyle: TextStyle(
+                        color: Colors.black, // Cor do hintText para leitura
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  TextField(
+                    enabled: false,
+                    style: const TextStyle(
+                      color: Colors.black, // Cor do texto para leitura
+                    ),
+                    controller: updateDateController,
+                    decoration: const InputDecoration(
+                      labelText: 'Última Atualização',
+                      labelStyle: TextStyle(
+                        color: Colors.black, // Cor do hintText para leitura
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                   const SizedBox(height: 20.0),
                   InkWell(

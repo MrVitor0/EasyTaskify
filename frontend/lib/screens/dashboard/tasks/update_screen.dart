@@ -74,11 +74,6 @@ class UpdateScreen extends StatelessWidget {
     }
   }
 
-  Future<void> saveStringAtSharedPreferences(String chave, String valor) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(chave, valor);
-  }
-
   Future<void> register(BuildContext context) async {
     getBackendUrl().then((value) {
       Alert(
@@ -96,15 +91,12 @@ class UpdateScreen extends StatelessWidget {
 
       updateTask(value).then((value) {
         Navigator.pop(context);
-        debugPrint(value['access_token']);
-        if (value['access_token'] != null && value['refresh_token'] != null) {
-          // Use o contexto correto, como context de um StatefulWidget
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (BuildContext context) => const HomeScreen(),
-            ),
-          );
-        }
+        // Use o contexto correto, como context de um StatefulWidget
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (BuildContext context) => const HomeScreen(),
+          ),
+        );
       }).catchError((error) {
         //get exception message
         String errorMessage = error.message.toString();
