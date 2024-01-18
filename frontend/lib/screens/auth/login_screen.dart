@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../dashboard/home_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:dio/dio.dart';
@@ -9,8 +10,8 @@ import '/utils/token_controller.dart';
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
-  final TextEditingController urlController = TextEditingController();
-  final TextEditingController senhaController = TextEditingController();
+  final TextEditingController mailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   //get backend url from shared preferences
   Future<String?> getBackendUrl() async {
@@ -41,8 +42,8 @@ class LoginScreen extends StatelessWidget {
         '/oauth/token',
         data: {
           'grant_type': 'password',
-          'username': 'seuemail@example.com',
-          'password': 'suasenha'
+          'username': mailController.text,
+          'password': passwordController.text,
         },
       ).timeout(const Duration(seconds: 8));
 
@@ -80,8 +81,14 @@ class LoginScreen extends StatelessWidget {
         buttons: [],
       ).show();
       loginRequest(value).then((value) {
+        Navigator.pop(context);
         if (value['access_token'] != null && value['refresh_token'] != null) {
-          Navigator.pop(context);
+          // Use o contexto correto, como context de um StatefulWidget
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomeScreen(),
+            ),
+          );
         } else {
           Navigator.pop(context);
           Alert(
@@ -165,7 +172,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20.0),
                   TextField(
-                    controller: urlController,
+                    controller: mailController,
                     decoration: const InputDecoration(
                       labelText: 'Seu e-mail',
                       hintText: 'john@doe.com',
@@ -174,7 +181,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20.0),
                   TextField(
-                    controller: senhaController,
+                    controller: passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Sua Senha',

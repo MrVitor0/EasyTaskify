@@ -21,9 +21,37 @@ String getMainRoute(String? backendUrl, bool isLoggedIn) {
   }
 }
 
+class AuthObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    // Intercepta a navegação e verifica a autenticação
+    super.didPush(route, previousRoute);
+    _checkAuthentication(route.settings.name);
+  }
+
+  void _checkAuthentication(String? routeName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? backendUrl = prefs.getString('backend_url');
+
+    TokenManager tokenManager = TokenManager();
+    bool isLoggedIn = await tokenManager.isUserLoggedIn();
+
+    // Rotas protegidas que requerem autenticação
+    List<String> protectedRoutes = ['/home', '/backend'];
+
+    if (protectedRoutes.contains(routeName) && !isLoggedIn) {
+      // Se o usuário não estiver autenticado, redireciona para a tela de login
+      Navigator.pushReplacementNamed(
+          navigatorKey.currentContext!, getMainRoute(backendUrl, isLoggedIn));
+    }
+  }
+}
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // clearSharedPreferences();
+  clearSharedPreferences();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   TokenManager tokenManager = TokenManager();
   bool isLoggedIn = await tokenManager.isUserLoggedIn();
@@ -40,7 +68,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       initialRoute: initialRoute,
+      navigatorObservers: [AuthObserver()],
       routes: {
         '/home': (context) => const HomeScreen(),
         '/login': (context) => LoginScreen(),

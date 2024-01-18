@@ -11,14 +11,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('HOMEPAGE'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: printUrl,
-          child: const Text('Print Pindas'),
+    return PopScope(
+      onPopInvoked: (didPop) => false,
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Home'),
+          automaticallyImplyLeading:
+              false, // Impede a inclusão automática do botão de voltar
+        ),
+        body: const Center(
+          child: Text('Welcome to the Home Screen!'),
         ),
       ),
     );
