@@ -4,7 +4,6 @@
 
 EasyTaskify é um aplicativo de gerenciamento de tarefas multiplataforma desenvolvido usando Flutter para front-end móvel e uma estrutura Laravel baseada em PHP para back-end de API RESTful. Este projeto permite que os usuários criem, visualizem, atualizem e excluam tarefas de maneira integrada, com a interação de dados facilitada por meio de autenticação segura.
 
-
 ## Versões das Tecnologias Utilizadas
 
 - Flutter: 2.16.8

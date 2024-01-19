@@ -37,11 +37,7 @@ Certifique-se também de ter um emulador ou dispositivo físico conectado para e
 
 ### Como conseguir o Cliente ID e o Cliente Secret do Laravel Passport?
 
-- Primeiro, você precisa instalar o Laravel Passport em seu projeto Laravel. Você pode fazer isso executando o seguinte comando:
-
-    ```composer require laravel/passport```
-
-- Em seguida, você precisa executar o comando `php artisan passport:install` para criar as chaves de criptografia e os tokens de acesso do Passport.
+- Primeiro, você precisa instalar o Laravel Passport em seu projeto Laravel, verifique as instruções de instalação do backend deste repositório.
 
 - Após a instalação do Passport, você pode encontrar o `Client ID` e o `Client Secret` no banco de dados na tabela `oauth_clients`, sendo respectivamente a coluna "ID" o `Client ID` e a coluna "Secret" o `Client Secret`.
 
