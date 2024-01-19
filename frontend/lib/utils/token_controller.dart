@@ -85,6 +85,13 @@ class TokenManager {
     await prefs.remove('TokenInfo');
   }
 
+  Future<void> refreshBackend() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('TokenInfo');
+    await prefs.remove('backend_url');
+    return;
+  }
+
   Future<bool> isUserLoggedIn() async {
     // Obter informações do token
     TokenController? tokenController = await getTokenInfo();

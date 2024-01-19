@@ -115,6 +115,15 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text('EasyTaskify'),
           actions: [
             IconButton(
+              icon: const Icon(Icons.restore),
+              onPressed: () {
+                TokenManager tokenManager = TokenManager();
+                tokenManager.refreshBackend().then((value) {
+                  Navigator.pushReplacementNamed(context, '/backend');
+                });
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () {
                 TokenManager tokenManager = TokenManager();

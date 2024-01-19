@@ -1,8 +1,8 @@
 import 'package:frontend/components/footer_component.dart';
+import 'package:frontend/components/navbar_component.dart';
 import '../../dashboard/home_screen.dart';
 import 'package:flutter/material.dart';
 import '/utils/tasks_controller.dart';
-import '/utils/token_controller.dart';
 
 class ViewScreen extends StatelessWidget {
   final Task taskData;
@@ -31,32 +31,7 @@ class ViewScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFD9D9D9),
         extendBodyBehindAppBar: true,
         extendBody: true,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          toolbarHeight: 30,
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: const Icon(Icons.home),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const HomeScreen(),
-                ),
-              );
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                TokenManager tokenManager = TokenManager();
-                tokenManager.logout().then((value) {
-                  Navigator.pushReplacementNamed(context, '/login');
-                });
-              },
-            ),
-          ],
-        ),
+        appBar: const TaskifyNavbar(),
         body: SingleChildScrollView(
           child: Center(
             child: Card(
