@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 ## WebServer 
 
-- php artisan serve --host=0.0.0.0 --port=8000 
+- php artisan serve --host=0.0.0.0 --port=8000

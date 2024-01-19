@@ -6,7 +6,8 @@ Este documento fornece uma visão geral da arquitetura do aplicativo Flutter Eas
 
 O projeto do aplicativo Flutter segue uma estrutura de arquivos organizada. Abaixo estão os principais diretórios e sua finalidade:
 
-- **lib/:** Contém as principais classes do aplicativo, como telas e widgets.
+- **lib/:** Contém as principais classes do aplicativo, como telas.
+- **components/:** Contém os **widgets** customizados do aplicativo.
 - **assets/:** Armazena os recursos estáticos, como imagens e fontes. (Atualmente não utilizado)
 
 ## Estrutura de Pastas

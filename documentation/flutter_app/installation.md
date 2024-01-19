@@ -9,6 +9,8 @@ Antes de iniciar, certifique-se de ter o seguinte instalado em seu ambiente de d
 - [Flutter SDK](https://flutter.dev/docs/get-started/install)
 - [Dart SDK](https://dart.dev/get-dart)
 
+Certifique-se também de ter um emulador ou dispositivo físico conectado para executar o aplicativo.
+
 ## Passos de Instalação
 
 1. **Clonar o Repositório:**
