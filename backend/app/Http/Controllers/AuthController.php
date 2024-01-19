@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -71,11 +72,31 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function handshake(Request $request)
-    {
+    {   
         //check if all the schema tables exists
         if (!Schema::hasTable('users') || !Schema::hasTable('tasks')) {
-            return response()->json(['error' => 'Oops, looks like you need to run php artisan migrate, some tables are missing', 'code' => 500], 500);
+            return response()->json(['data' => 'Oops, parece que a tabela de usuários não foi encontrada, o banco de dados foi instalado corretamente?', 'code' => 500], 500);
         }
-        return response()->json(['success' => 'handshake success', 'code' => 200], 200);
+
+        //check request body, view if client_id and client_secret are present
+        if (!$request->has('client_id') || !$request->has('client_secret')) {
+            return response()->json(['data' => 'Client ID & Client Secret são necessários.', 'code' => 400], 400);
+        }
+
+        $clientId = $request->input('client_id');
+        $clientSecret = $request->input('client_secret');
+
+        // Consulta a tabela oauth_clients
+        $client = DB::table('oauth_clients')
+            ->where('id', $clientId)
+            ->where('secret', $clientSecret)
+            ->first();
+
+        // Verificar se o cliente existe e se o segredo está correto
+        if ($client) {
+            return response()->json(['success' => 'Success', 'client' => $client, 'code' => 200], 200);
+        }
+        $errorMSG = "O Client ID informado não existe ou o Client Secret está incorreto. Verifique e tente novamente. Estes códigos são gerados no momento da instalação do Laravel Passport.";
+        return response()->json(['data' => $errorMSG, 'code' => 401], 401);
     }
 }

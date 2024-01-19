@@ -9,6 +9,7 @@ O projeto do aplicativo Flutter segue uma estrutura de arquivos organizada. Abai
 - **lib/:** Contém as principais classes do aplicativo, como telas.
 - **components/:** Contém os **widgets** customizados do aplicativo.
 - **assets/:** Armazena os recursos estáticos, como imagens e fontes. (Atualmente não utilizado)
+- **utils/:**  Contém classes utilitárias e funções auxiliares.
 
 ## Estrutura de Pastas
 
@@ -27,6 +28,7 @@ EasyTaskify/
 |               |-- create_screen.dart
 |               |-- update_screen.dart
 |               |-- view_screen.dart
+|   |-- utils/
 |-- assets/
 |   |-- images/
 |       |-- (Empty)

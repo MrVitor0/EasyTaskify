@@ -89,6 +89,8 @@ class TokenManager {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('TokenInfo');
     await prefs.remove('backend_url');
+    await prefs.remove('client_id');
+    await prefs.remove('client_secret');
     return;
   }
 

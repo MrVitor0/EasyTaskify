@@ -21,18 +21,24 @@ class AuthInterceptor extends Interceptor {
           'Bearer ${tokenController.accessToken}';
     }
 
-    // Adiciona client_id e client_secret ao corpo (body) da solicitação, isso precisa estar no .ENV (Facilitar Instalação)
-    Map<String, dynamic> newData = {
-      'client_id': '6',
-      'client_secret': 'NHWv3uDgSc12CxgAIlnky1KqERla1NsrEvhm0mVo',
-    };
+    String? clientId = prefs.getString('client_id');
+    String? clientSecret = prefs.getString('client_secret');
 
-    // Mescla os dados existentes com os novos dados
-    if (options.data is Map<String, dynamic>) {
-      newData.addAll(options.data);
+    if (clientId != null &&
+        clientId.isNotEmpty &&
+        clientSecret != null &&
+        clientSecret.isNotEmpty) {
+      // Adiciona client_id e client_secret ao corpo (body) da solicitação, isso precisa estar no .ENV (Facilitar Instalação)
+      Map<String, dynamic> newData = {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+      };
+      // Mescla os dados existentes com os novos dados
+      if (options.data is Map<String, dynamic>) {
+        newData.addAll(options.data);
+      }
+      options.data = newData;
     }
-
-    options.data = newData;
 
     // Obtém a chave "backend_url" do SharedPreferences e adiciona à URL
     String? backendUrl = prefs.getString('backend_url');

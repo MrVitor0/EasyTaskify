@@ -8,6 +8,8 @@ class BackendScreen extends StatelessWidget {
   BackendScreen({Key? key}) : super(key: key);
 
   final TextEditingController urlController = TextEditingController();
+  final TextEditingController clientIDController = TextEditingController();
+  final TextEditingController clientSecretController = TextEditingController();
 
   Future<String> testURL(String backendUrl) async {
     Dio dio = Dio();
@@ -15,6 +17,10 @@ class BackendScreen extends StatelessWidget {
       await dio
           .post(
             '$backendUrl/api/v1/handshake',
+            data: {
+              'client_id': clientIDController.text,
+              'client_secret': clientSecretController.text,
+            },
             options: Options(
               headers: {
                 'Content-Type': 'application/json',
@@ -23,19 +29,52 @@ class BackendScreen extends StatelessWidget {
             ),
           )
           .timeout(const Duration(seconds: 8));
-    } catch (e) {
-      return e.toString();
+    } on DioException catch (error) {
+      Map<String, dynamic> responseData = error.response?.data ?? {};
+      return responseData['data'] ??
+          'Não foi possível conectar ao backend. Verifique a URL ($backendUrl) e tente novamente.';
     }
     return 'Sucesso';
   }
 
-  Future<void> saveStringAtSharedPreferences(String chave, String valor) async {
+  Future<void> saveKeysAtSharedPreferences(
+      String backendUrl, String clientId, String clientSecret) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(chave, valor);
+    await prefs.setString('backend_url', backendUrl);
+    await prefs.setString('client_id', clientId);
+    await prefs.setString('client_secret', clientSecret);
   }
 
   Future<void> validateBackendUrl(
       BuildContext context, String backendUrl) async {
+    //verifque se clientIDController e clientSecretController estão vazios
+    if (clientIDController.text.isEmpty ||
+        clientSecretController.text.isEmpty) {
+      Alert(
+        context: context,
+        title: 'Erro',
+        desc:
+            'Client ID e Client Secret são obrigatórios, certifique-se de preencher os campos corretamente, ou a aplicação não funcionará.',
+        style: const AlertStyle(
+          backgroundColor: Colors.white,
+          titleStyle: TextStyle(color: Colors.black),
+          descStyle: TextStyle(color: Colors.black, fontSize: 16.0),
+          isCloseButton: false,
+          isOverlayTapDismiss: false,
+        ),
+        buttons: [
+          DialogButton(
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ).show();
+      return;
+    }
+
     Alert(
       context: context,
       title: 'Tentando Conexão',
@@ -50,17 +89,23 @@ class BackendScreen extends StatelessWidget {
     ).show();
     testURL(backendUrl).then((value) {
       if (value == 'Sucesso') {
-        saveStringAtSharedPreferences('backend_url', backendUrl).then((value) {
+        saveKeysAtSharedPreferences(backendUrl, clientIDController.text,
+                clientSecretController.text)
+            .then((value) {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/login');
         });
       } else {
+        //se value vier vazio, exibe a mensagem padrão
+        String defaultmsg = value.isEmpty
+            ? 'Não foi possível conectar ao backend. Verifique a URL ($backendUrl) e tente novamente.'
+            : value;
+
         Navigator.pop(context);
         Alert(
           context: context,
           title: 'Erro',
-          desc:
-              'Não foi possível conectar ao backend. Verifique a URL ($backendUrl) e tente novamente.',
+          desc: defaultmsg,
           style: const AlertStyle(
             backgroundColor: Colors.white,
             titleStyle: TextStyle(color: Colors.black),
@@ -120,7 +165,7 @@ class BackendScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //adicione uma imagem de logo no centro
+                  // adicione uma imagem de logo no centro
                   const Text(
                     'EasyTaskify',
                     style: TextStyle(
@@ -131,9 +176,10 @@ class BackendScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10.0),
                   const Text(
-                      'Antes de iniciar a aplicação, é necessário informar o URL do backend. 🚀',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 16.0)),
+                    'Antes de iniciar a aplicação, é necessário informar o URL do backend. 🚀',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  ),
                   const SizedBox(height: 20.0),
                   TextField(
                     controller: urlController,
@@ -143,13 +189,41 @@ class BackendScreen extends StatelessWidget {
                       border: OutlineInputBorder(),
                     ),
                   ),
+                  const SizedBox(
+                      height: 10.0), // Adiciona um espaço entre os campos
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: clientIDController,
+                          decoration: const InputDecoration(
+                            labelText: 'Client ID',
+                            hintText: 'Ex: 1',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                          width: 10.0), // Adiciona um espaço entre os campos
+                      Expanded(
+                        child: TextField(
+                          controller: clientSecretController,
+                          decoration: const InputDecoration(
+                            labelText: 'Client Secret',
+                            hintText:
+                                'Ex: NHWv3uDgSc12CxgAIlnky1KqERla1NsrEvhm0mVo',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20.0),
                   ElevatedButton(
                     onPressed: () {
                       String backendUrl = urlController.text;
                       validateBackendUrl(context, backendUrl);
                     },
-                    //precisa ser mais largo
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50.0),
                     ),

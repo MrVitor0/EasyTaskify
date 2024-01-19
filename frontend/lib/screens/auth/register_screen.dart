@@ -165,6 +165,17 @@ class RegisterScreen extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.restore),
+              onPressed: () {
+                TokenManager tokenManager = TokenManager();
+                tokenManager.refreshBackend().then((value) {
+                  Navigator.pushReplacementNamed(context, '/backend');
+                });
+              },
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Center(

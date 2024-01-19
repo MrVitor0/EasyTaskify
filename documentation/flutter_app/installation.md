@@ -35,6 +35,18 @@ Certifique-se também de ter um emulador ou dispositivo físico conectado para e
 
     ```flutter run```
 
+### Como conseguir o Cliente ID e o Cliente Secret do Laravel Passport?
+
+- Primeiro, você precisa instalar o Laravel Passport em seu projeto Laravel. Você pode fazer isso executando o seguinte comando:
+
+    ```composer require laravel/passport```
+
+- Em seguida, você precisa executar o comando `php artisan passport:install` para criar as chaves de criptografia e os tokens de acesso do Passport.
+
+- Após a instalação do Passport, você pode encontrar o `Client ID` e o `Client Secret` no banco de dados na tabela `oauth_clients`, sendo respectivamente a coluna "ID" o `Client ID` e a coluna "Secret" o `Client Secret`.
+
+- Copie o `Client ID` e o `Client Secret` e utilize-os no aplicativo Flutter (Será solicitado na primeira execução do aplicativo).
+
 ## Problemas Comuns
 
 ### **Problema:** O comando `flutter run` não funciona
